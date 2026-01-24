@@ -1,0 +1,9 @@
+yfinance
+pandas
+fastapi[standard]
+psycopg2-binary
+python-dotenv
+sqlalchemy
+transformers
+torch
+huggingface_hub[hf_xet]

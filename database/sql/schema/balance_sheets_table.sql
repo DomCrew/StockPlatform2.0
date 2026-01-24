@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS stockplatform.balance_sheets (
+    balance_sheet_id SERIAL PRIMARY KEY,
+    stock_id INT,
+    date_time TIMESTAMP NOT NULL,
+    total_assets FLOAT,
+    total_liabilities_net_minority_interest FLOAT,
+    stockholders_equity FLOAT,
+    current_assets FLOAT,
+    current_liabilities FLOAT,
+    cash_and_cash_equivalents FLOAT,
+    receivables FLOAT,
+    inventory FLOAT,
+    total_debt FLOAT,
+    net_debt FLOAT,
+    long_term_debt FLOAT,
+    current_debt FLOAT,
+    net_ppe FLOAT,
+    investments_and_advances FLOAT,
+    retained_earnings FLOAT,
+    common_stock_equity FLOAT,
+    shares_issued BIGINT,
+    FOREIGN KEY (stock_id) REFERENCES stockplatform.stocks(stock_id)
+);

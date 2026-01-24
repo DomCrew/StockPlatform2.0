@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS stockplatform.income_statements (
+    income_statement_id SERIAL PRIMARY KEY,
+    stock_id BIGINT,
+    date_time TIMESTAMP NOT NULL,
+    total_revenue FLOAT,
+    cost_of_revenue FLOAT,
+    gross_profit FLOAT,
+    operating_expense FLOAT,
+    research_and_development FLOAT,
+    selling_general_and_administration FLOAT,
+    operating_income FLOAT,
+    ebit FLOAT,
+    ebitda FLOAT,
+    interest_expense FLOAT,
+    interest_income FLOAT,
+    pretax_income FLOAT,
+    tax_provision FLOAT,
+    net_income FLOAT,
+    diluted_eps FLOAT,
+    diluted_average_shares BIGINT,
+    FOREIGN KEY (stock_id) REFERENCES stockplatform.stocks(stock_id)
+);

@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS stockplatform.cash_flows(
+    cash_flow_id SERIAL PRIMARY KEY,
+    stock_id INTEGER,
+    date_time TIMESTAMP NOT NULL,
+    free_cash_flow FLOAT,
+    operating_cash_flow FLOAT,
+    capex FLOAT,
+    net_income FLOAT,
+    stock_based_comp FLOAT,
+    depreciation_amortization FLOAT,
+    change_working_capital FLOAT,
+    dividends_paid FLOAT,
+    share_buybacks FLOAT,
+    share_issuance FLOAT,
+    debt_issuance FLOAT,
+    debt_repayment FLOAT,
+    end_cash_position FLOAT,
+    changes_in_cash FLOAT,
+    FOREIGN KEY (stock_id) REFERENCES stockplatform.stocks(stock_id)
+);
