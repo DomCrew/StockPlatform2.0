@@ -37,6 +37,10 @@ Then, to run the frontend do ```npm start```
 
 ## API ENDPOINTS
 
+```/stocks/[ticker e.g. amzn]/endpoint```
+
+### Stock Info
+
 ```http://127.0.0.1:8000/stocks/[ticker e.g. amzn]/info```
 Returns a dictionary of static information in the format:
 ```
@@ -55,8 +59,11 @@ Returns a dictionary of static information in the format:
 }
 ```
 
-```http://127.0.0.1:8000/stocks/[ticker e.g. amzn]/prices?period=[one of 'intraday','daily','weekly','monthly']```
-Returns a list of OCHL data in the format:
+### Chart data
+
+These endpoints all take a parameter ```period```, which can be one of ```"intraday"```, ```"daily"```, ```"weekly"``` or ```"monthly"```. This determines the intervals between each data point as well as how far back in time to fetch data for. For example, ```"weekly"``` will fetch weekly values for a period of 2 years. If a period is not provided, it defaults to ```"weekly"```.
+
+For OHLC data, there is a ```prices``` endpoint. ```http://127.0.0.1:8000/stocks/ticker/prices``` returns a list of dictionaries with OHLC data, in order of date.
 ```
 [{
     "date": "2024-01-15T00:00:00",
@@ -64,92 +71,95 @@ Returns a list of OCHL data in the format:
     "close": 155.320007324219,
     "high": 155.759994506836,
     "low": 151.175003051758
-  }]
+  }, ...]
 ```
 
-```http://127.0.0.1:8000/stocks/[ticker e.g. amzn]/volumes?period=[one of 'intraday','daily','weekly','monthly']```
-Returns a list of volume in the format:
+For volumes ```http://127.0.0.1:8000/stocks/ticker/volumes``` will returns a list of volumes in the format:
 ```
 [{
     "date": "2024-01-15T00:00:00",
     "volume": 15123
-  }]
+  }, ...]
 ```
 
-```http://127.0.0.1:8000/stocks/[ticker e.g. amzn]/smas?period=[one of 'intraday','daily','weekly','monthly']```
-Returns a list of simple moving averages in the format:
+For simple moving averages, ```http://127.0.0.1:8000/stocks/ticker/volumes``` returns a list of simple moving average dictionaries in the format:
 ```
 [{
     "date": "2025-12-22T00:00:00",
     "sma20": 228.272476196289,
     "sma50": 216.994674987793,
     "sma100": 202.954708709717
-  }]
+  }, ...]
 ```
+
+For on balance volume, ```http://127.0.0.1:8000/stocks/ticker/obvs``` returns a list of on balance volume figures like so:
+```
+[{
+    "date_time": "2024-01-22T00:00:00",
+    "obv": 64663492
+  }, ...]
+```
+
+For average true range, ```http://127.0.0.1:8000/stocks/ticker/obvs``` returns a list of average true range data in the format:
+```
+[
+  {
+    "date_time": "2024-01-22T00:00:00",
+    "atr": 9.11776406424386
+  }, ...]
+```
+
+For commodity channel index, ```http://127.0.0.1:8000/stocks/ticker/ccis``` returns a list of commodity channel index figures:
+```
+[{
+    "date_time": "2024-06-03T00:00:00",
+    "CCI": 59.1266205811448,
+    ...
+  }, ...]
+```
+
+For moving average convergence divergence, ```http://127.0.0.1:8000/stocks/ticker/macd``` returns the macd line, signal line and histogram information like so:
+```
+[{
+    "date_time": "2024-01-22T00:00:00",
+    "macd_line": 0,
+    "signal_line": 0,
+    "histogram": 0
+  }, ...]
+```
+
+### Other
 
 ```http://127.0.0.1:8000/stocks/[ticker e.g. amzn/latestprice```
 Returns the latest price and the time of the request:
 ```
 {
-  "latest_price": 239.12,
-  "time": "2026-01-19T18:02:48.407917"
+  "latest_price": 239.16,
+  "time": "2026-01-25T16:13:12.385629",
+  "diff": {
+    "actual": -0.0300024414062534,
+    "previous": 239.190002441406,
+    "percentage": -0.01
+  }
 }
 ```
 
-```http://127.0.0.1:8000/stocks/amzn/articles?limit=5```
-Returns a list of articles with sentiment analysis scores in the format:
+For a list of recent articles, there is an endpoint ```articles```, which also takes a ```limit``` parameter. This: ```http://127.0.0.1:8000/stocks/amzn/articles?limit=5``` returns the five most recent articles for amzn in order of date:
 ```
 [{
     "date_time": "2026-01-22T14:34:43",
     "title": "Apple and amazon launch new product",
-    "link": "https://example.com/amazon-product",
-    "sa_label": "positive",
-    "sa_score": 0.8
-  }]
+    ...
+  }, ...]
 ```
 
-```http://127.0.0.1:8000/stocks/amzn/cashflows```
-Returns a list of cashflow information in the format:
+There are three endpoints for finance tables, ```cashflows```, ```balancesheets``` and ```incomestatements```. For example, ```http://127.0.0.1:8000/stocks/amzn/cashflows``` will return a list of cashflow dictionaries in order of date:
 ```
 [{
     "cash_flow_id": 1,
     "stock_id": 1,
     "date_time": "2024-12-31T00:00:00",
     "free_cash_flow": 32878000000,
-    "operating_cash_flow": 115877000000,
-    "capex": -82999000000,
-    "net_income": 59248000000,
-    "stock_based_comp": 22011000000,
-    "depreciation_amortization": 52795000000,
-    "change_working_capital": -15541000000,
-    "dividends_paid": null,
-    "share_buybacks": 0,
-    "share_issuance": null,
-    "debt_issuance": 5142000000,
-    "debt_repayment": -16954000000,
-    "end_cash_position": 82312000000,
-    "changes_in_cash": 9723000000
-  }]
-```
-
-```http://127.0.0.1:8000/stocks/amzn/incomestatements```
-Returns a list of income statement information in the format:
-```
-[{
-    "date_time": "2024-12-31T00:00:00",
-    "ebitda": 123815000000,
-    "ebit": 71020000000,
-    "interest_expense": 2406000000,
-    "interest_income": 4677000000,
-    "diluted_average_shares": 10721000000,
-    "diluted_eps": 5.53,
-    "net_income": 59248000000,
-    "tax_provision": 9265000000,
-    "pretax_income": 68614000000,
-    "operating_income": 68593000000,
-    "operating_expense": 243078000000,
-    "gross_profit": 311671000000,
-    "total_revenue": 637959000000,
-    "stock_id": 1
-  }]
+    ...
+  }, ...]
 ```
