@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY ../../requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ../../database/database.py .
+COPY ../../database/database_utils.py .
+COPY ../finance.py .
+COPY ../sentiment_analysis.py .
+COPY daily_pipeline.py .
+
+CMD ["python", "daily_pipeline.py"]

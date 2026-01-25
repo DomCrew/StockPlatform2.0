@@ -196,5 +196,10 @@ class DatabaseManager:
         sql_query = "SELECT * FROM stockplatform.balance_sheets WHERE stock_id = %s ORDER BY date_time DESC LIMIT 4"
         return database_utils.execute_sql_query(self.connection, sql_query, (stock_id,))
 
+    def get_tickers(self) -> list:
+        """Returns a list of all tickers in the stocks table"""
+        sql_query = "SELECT ticker FROM stockplatform.stocks"
+        return [row["ticker"] for row in database_utils.execute_sql_query(self.connection, sql_query,())]
+
     def close_connection(self) -> None:
         self.connection.close()

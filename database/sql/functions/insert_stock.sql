@@ -39,6 +39,17 @@ BEGIN
         exchange_p,
         country_p,
         NOW()
+    ON CONFLICT (ticker)
+    DO UPDATE SET
+        long_name = EXCLUDED.long_name,
+        description = EXCLUDED.description,
+        sector = EXCLUDED.sector,
+        industry = EXCLUDED.industry,
+        full_time_employees = EXCLUDED.full_time_employees,
+        currency = EXCLUDED.currency,
+        exchange = EXCLUDED.exchange,
+        country = EXCLUDED.country,
+        last_updated = NOW();
     );
 END;
 $$;

@@ -1,4 +1,4 @@
-from collection.finance import get_history, get_income_statement, get_info, get_cash_flow, get_balance_sheet
+from collection.finance import get_history, get_income_statement, get_info, get_cash_flow, get_balance_sheet, get_news
 from collection.sentiment_analysis import get_news_and_sentiment
 from database.database import DatabaseManager
 from dotenv import load_dotenv
@@ -23,10 +23,12 @@ if __name__ == "__main__":
     history = get_history("aapl")
     dbm.insert_history("aapl", history)
 
-    articles = get_news_and_sentiment("amzn", 10)
+    news = get_news("aapl", 10)
+    articles = get_news_and_sentiment("amzn", 10, news)
     dbm.insert_articles("amzn", articles)
 
-    articles = get_news_and_sentiment("aapl", 10)
+    news = get_news("aapl", 10)
+    articles = get_news_and_sentiment("aapl", 10, news)
     dbm.insert_articles("aapl", articles)
 
     cash_flows = get_cash_flow("amzn")
@@ -46,5 +48,7 @@ if __name__ == "__main__":
 
     balance_sheet = get_balance_sheet("aapl")
     dbm.insert_balance_sheets("aapl", balance_sheet)
+
+    print(dbm.get_tickers())
 
     dbm.close_connection()

@@ -1,7 +1,9 @@
+"""
+Contains methods for fetching financial data and calculations involving that data.
+"""
 import yfinance as yf
 import pandas as pd
 import numpy as np
-import math
 
 def get_history(ticker: str) -> pd.DataFrame:
     """ Returns historical prices for a given ticker """
@@ -128,6 +130,7 @@ def get_smas(history_df: pd.DataFrame) -> pd.DataFrame:
     return sma_df.to_dict(orient="records")
 
 def get_ccis(typical_prices: list) -> list:
+    """Returns a list of commodity channel indexes"""
     tp_df = pd.DataFrame(typical_prices)
     calc_df = pd.DataFrame({
         "date_time": tp_df["date_time"],
@@ -138,10 +141,11 @@ def get_ccis(typical_prices: list) -> list:
         )
     })
 
-    calc_df["CCI"] = (calc_df["TP"] - calc_df["20DaySMAofTP"]) / (0.015 * calc_df["20DayMeanDevofTP"])
+    calc_df["CCI"] = (calc_df["TP"] - calc_df["20DaySMAofTP"])/(0.015 * calc_df["20DayMeanDevofTP"])
     return calc_df.dropna().to_dict(orient="records")
 
 def get_macds(history: list) -> list:
+    """Returns a list of MACD dictionaries"""
     cp_df = pd.DataFrame({
         "date_time": [item["datetime"] for item in history],
         "close": [item["close_p"] for item in history]
@@ -149,7 +153,7 @@ def get_macds(history: list) -> list:
 
     exp1 = cp_df["close"].ewm(span=12, adjust=False).mean()
     exp2 = cp_df["close"].ewm(span=26, adjust=False).mean()
-    
+
     macd_df = pd.DataFrame({
         "date_time": cp_df["date_time"],
         "macd_line": exp1 - exp2
@@ -161,20 +165,24 @@ def get_macds(history: list) -> list:
     return macd_df.to_dict(orient="records")
 
 def obv_map_function(row, prev_obv):
+    """Returns on balance volume"""
     if row["close_p"] > row["open_p"]:
         return prev_obv + row["volume_q"]
-    elif row["close_p"] < row["open_p"]:
+
+    if row["close_p"] < row["open_p"]:
         return prev_obv - row["volume_q"]
-    else:
-        return prev_obv
+
+    return prev_obv
 
 def true_range_map_function(row, prev_close):
+    """Returns true range"""
     high_low = row["high_p"] - row["low_p"]
     high_prev_close = abs(row["high_p"] - prev_close)
     low_prev_close = abs(row["low_p"] - prev_close)
     return max(high_low, high_prev_close, low_prev_close)
 
 def get_obvs(history: list) -> list:
+    """Returns a list of on balance volumes"""
     obv_list = []
     prev_obv = 0
     for row in history:
@@ -187,6 +195,7 @@ def get_obvs(history: list) -> list:
     return obv_list
 
 def get_atrs(prices: list) -> list:
+    """Returns a list of average true ranges"""
     trs = [{
         "date_time": prices[0]["datetime"],
         "tr": prices[0]["high_p"] - prices[0]["low_p"]
@@ -210,7 +219,7 @@ def get_atrs(prices: list) -> list:
             "date_time": tr["date_time"],
             "atr": atr
         })
-    
+
     return atrs
 
 if __name__ == "__main__":

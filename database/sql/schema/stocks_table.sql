@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS stockplatform.stocks(
     stock_id SERIAL PRIMARY KEY,
-    ticker VARCHAR(4) UNIQUE NOT NULL,
+    ticker VARCHAR(6) UNIQUE NOT NULL,
     long_name VARCHAR(50),
     description TEXT,
     sector VARCHAR(20),

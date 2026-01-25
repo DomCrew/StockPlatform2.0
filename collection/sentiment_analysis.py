@@ -1,10 +1,8 @@
+"""Module for sentiment analysis of finance articles"""
 from transformers import pipeline
 
-from collection.finance import get_news
-
-def get_news_and_sentiment(ticker: str, count: int):
+def get_news_and_sentiment(ticker: str, count: int, news: list):
     """ Returns latest news and their sentiment for a given ticker """
-    news = get_news(ticker, count)
     titles = [f"{article["title"]}. {article["summary"]}" for article in news]
     sentiment_analyzer = pipeline(
         "text-classification",
