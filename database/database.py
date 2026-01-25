@@ -87,13 +87,13 @@ class DatabaseManager:
         )
         self.connection.commit()
 
-    def insert_article(self, ticker: str, title: str, link: str, datetime: str, sa_label: str, sa_score: float) -> None:
+    def insert_article(self, ticker: str, title: str, summary: str, link: str, datetime: str, sa_label: str, sa_score: float) -> None:
         stock_id = self.get_stock_id_from_ticker(ticker)
 
         with self.connection as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
-                curs.execute("SELECT * FROM stockplatform.insert_article(%s, %s, %s, %s, %s, %s)",
-                             (stock_id, title, link, datetime, sa_label, sa_score))
+                curs.execute("SELECT * FROM stockplatform.insert_article(%s, %s, %s, %s, %s, %s, %s)",
+                             (stock_id, title, summary, link, datetime, sa_label, sa_score))
         self.connection.commit()
 
     def insert_articles(self, ticker: str, articles: list) -> None:
@@ -101,6 +101,7 @@ class DatabaseManager:
             self.insert_article(
                 ticker,
                 article['title'],
+                article['summary'],
                 article['link'],
                 article['date_time'],
                 article['sa_label'],

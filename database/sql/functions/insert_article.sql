@@ -3,6 +3,7 @@ DROP FUNCTION IF EXISTS stockplatform.insert_article;
 CREATE OR REPLACE FUNCTION stockplatform.insert_article(
     p_stock_id BIGINT,
     p_title TEXT,
+    p_summary TEXT,
     p_link TEXT,
     p_date_time TIMESTAMP,
     p_sa_label VARCHAR(10),
@@ -16,6 +17,7 @@ DECLARE
 BEGIN
     INSERT INTO stockplatform.articles (
         title,
+        summary,
         link,
         date_time,
         sa_label,
@@ -23,6 +25,7 @@ BEGIN
     )
     VALUES (
         p_title,
+        p_summary,
         p_link,
         p_date_time,
         p_sa_label,

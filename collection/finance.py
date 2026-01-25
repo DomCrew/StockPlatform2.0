@@ -21,6 +21,7 @@ def get_news(ticker: str, count: int) -> list:
     news = yf.Ticker(ticker).get_news(count, "news")
     return [{
         "title": item["content"].get("title"),
+        "summary": item["content"].get("summary"),
         "link": item["content"]["canonicalUrl"].get("url"),
         "date_time": item["content"].get("pubDate")
     } for item in news]
@@ -213,4 +214,4 @@ def get_atrs(prices: list) -> list:
     return atrs
 
 if __name__ == "__main__":
-    print(get_balance_sheet("AAPL").columns)
+    print(get_news("AAPL", 1))

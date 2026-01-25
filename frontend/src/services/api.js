@@ -68,7 +68,7 @@ export async function getArticles(ticker, limit=10) {
   );
   const articles = await res.json();
   for (let i = 0; i < articles.length; i++) {
-    articles[i].colour = articles[i].sa_label === "positive" ? "var(--green)" : (articles[i].sa_label === "negative" ? "var(--pink)" : "var(--orange)");
+    articles[i].colour = articles[i].sa_label === "Positive" ? "var(--green)" : (articles[i].sa_label === "Negative" ? "var(--pink)" : "var(--orange)");
   }
   return articles;
 }
