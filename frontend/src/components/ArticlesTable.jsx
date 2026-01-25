@@ -16,12 +16,13 @@ export default function ArticlesTable({ ticker }) {
   if (articles == null) return <h3>Fetching ...</h3>;
 
   return (
-    <div>
+    <div class="table-card">
+      <h2>Recent Articles</h2>
       <table>
         <thead>
           <tr>
             <th>TimeStamp</th>
-            <th>Title</th>
+            <th>Title / URL</th>
             <th>Sentiment</th>
             <th>Score</th>
           </tr>
@@ -39,8 +40,8 @@ export default function ArticlesTable({ ticker }) {
                   {article.title}
                 </a>
               </td>
-              <td>{article.sa_label}</td>
-              <td style={{ color: article.colour }}><strong>{article.sa_score}</strong></td>
+              <td style={{ color: article.colour }}>{article.sa_label.toUpperCase()}</td>
+              <td style={{ color: article.colour }}>{article.sa_score}</td>
             </tr>
           ))}
         </tbody>

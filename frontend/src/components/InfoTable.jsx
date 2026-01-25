@@ -16,7 +16,7 @@ export default function InfoTable({ ticker }) {
   if (info == null) return <h3>Fetching ...</h3>;
 
   return (
-    <div>
+    <div class="table-card">
       <p><strong>Long Name:</strong> {info.long_name}</p>
       <p><strong>Description:</strong> {info.description}</p>
       <p><strong>Sector:</strong> {info.sector}</p>

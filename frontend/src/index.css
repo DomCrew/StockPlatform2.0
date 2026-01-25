@@ -1,22 +1,25 @@
+:root {
+  --body-background-color: #002040;
+  --div-background-color: #000c18;
+  --div-border-radius: 10px;
+  --text-colour: #6688cc;
+  --link-colour: #2277ff;
+  --green: #22aa44;
+  --pink: #F92672;
+  --light-pink: #f280d0;
+  --orange: #FFD700;
+  --purple: #9966b8;
+  --white: #ddbb88;
+  --font-family: 'Consolas', 'Courier New', monospace;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-.chart-card {
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background-color: var(--body-background-color);
+  color: var(--text-colour);
 }
 
 .app-container {
@@ -25,6 +28,83 @@ code {
   padding: 24px;
 }
 
+.chart-card, .table-card, .header-card {
+  background: var(--div-background-color);
+  border-radius: var(--div-border-radius);
+  border: 1px solid var(--text-colour);
+  padding: 8px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.chart-card {
+  text-align: center;
+}
+
+.table-card {
+  text-align: center;
+}
+
+.header-card {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+a {
+  color: var(--link-colour);
+}
+
+strong {
+  color: var(--white);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+th, td {
+  padding: 4px;
+  text-align: center;
+}
+
+th {
+  color: var(--white);
+}
+
+button {
+  font-family: var(--font-family);
+  background-color: var(--div-background-color);
+  color: var(--text-colour);
+  border: 1px solid var(--text-colour);
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-family);
+  color: var(--purple);
+}
+
 h1 {
   margin-bottom: 16px;
+}
+
+.apexcharts-tooltip {
+  background: var(--div-background-color) !important;
+}
+
+.apexcharts-tooltip-title {
+  background: var(--div-background-color) !important;
+  color: var(--purple) !important;
+  padding: 2px;
+}
+
+.apexcharts-tooltip-text {
+  color: var(--orange) !important;
 }

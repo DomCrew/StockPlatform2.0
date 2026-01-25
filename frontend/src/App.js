@@ -1,18 +1,18 @@
 import { useState } from "react";
-import StockChart from "./components/StockChart";
-import VolumeChart from "./components/VolumeChart";
+import CandleChart from "./components/Charts/CandleChart";
+import VolumeChart from "./components/Charts/VolumeChart";
 import TickerSearch from "./components/TickerSearch";
 import LatestPrice from "./components/LatestPrice";
 import InfoTable from "./components/InfoTable";
 import DailyTable from "./components/DailyTable";
 import ArticlesTable from "./components/ArticlesTable";
-import CashFlowTable from "./components/CashFlowTable";
-import IncomeStatementTable from "./components/IncomeStatementTable";
-import BalanceSheetTable from "./components/BalanceSheetTable";
-import CCIChart from "./components/CCIChart";
-import MACDChart from "./components/MACDChart";
-import OBVChart from "./components/OBVChart";
-import ATRChart from "./components/ATRChart";
+import CashFlowTable from "./components/FinanceTables/CashFlowTable";
+import IncomeStatementTable from "./components/FinanceTables/IncomeStatementTable";
+import BalanceSheetTable from "./components/FinanceTables/BalanceSheetTable";
+import CCIChart from "./components/Charts/CCIChart";
+import MACDChart from "./components/Charts/MACDChart";
+import OBVChart from "./components/Charts/OBVChart";
+import ATRChart from "./components/Charts/ATRChart";
 
 export default function App() {
   const [ticker, setTicker] = useState("amzn");
@@ -22,44 +22,54 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <h1>StockPlatform2 - {ticker}</h1>
-      <LatestPrice ticker={ticker} />
+      <div class="header-card">
+        <div>
+          <h1>StockPlatform2 - {ticker}</h1>
+          <TickerSearch onSubmit={setTicker} />
+        </div>
+        <LatestPrice ticker={ticker} />
+      </div>
 
-      <TickerSearch onSubmit={setTicker} />
-      <button onClick={() => setPeriod("intraday")}>
-        Intraday
-      </button>
-      <button onClick={() => setPeriod("daily")}>
-        Daily
-      </button>
-      <button onClick={() => setPeriod("weekly")}>
-        Weekly
-      </button>
-      <button onClick={() => setPeriod("monthly")}>
-        Monthly
-      </button>
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%"}}>
+        <div>
+          <button onClick={() => setPeriod("intraday")}>
+            Intraday
+          </button>
+          <button onClick={() => setPeriod("daily")}>
+            Daily
+          </button>
+          <button onClick={() => setPeriod("weekly")}>
+            Weekly
+          </button>
+          <button onClick={() => setPeriod("monthly")}>
+            Monthly
+          </button>
+        </div>
 
-      <button onClick={() => setChart("stock")}>
-        Candlestick Chart
-      </button>
-      <button onClick={() => setChart("volume")}>
-        Volume Chart
-      </button>
-      <button onClick={() => setChart("macd")}>
-        MACD Chart
-      </button>
-      <button onClick={() => setChart("obv")}>
-        OBV Chart
-      </button>
-      <button onClick={() => setChart("atr")}>
-        ATR Chart
-      </button>
-      <button onClick={() => setChart("cci")}>
-        CCI Chart
-      </button>
+        <div>
+          <button onClick={() => setChart("stock")}>
+            Candlestick Chart
+          </button>
+          <button onClick={() => setChart("volume")}>
+            Volume Chart
+          </button>
+          <button onClick={() => setChart("macd")}>
+            MACD Chart
+          </button>
+          <button onClick={() => setChart("obv")}>
+            OBV Chart
+          </button>
+          <button onClick={() => setChart("atr")}>
+            ATR Chart
+          </button>
+          <button onClick={() => setChart("cci")}>
+            CCI Chart
+          </button>
+        </div>
+      </div>
 
       {chart === "stock" && (
-        <StockChart
+        <CandleChart
           ticker={ticker}
           period={period}
         />
@@ -95,15 +105,15 @@ export default function App() {
         />
       )}
 
-      <InfoTable
-        ticker={ticker}
-      />
-
       <DailyTable
         ticker={ticker}
       />
 
       <ArticlesTable
+        ticker={ticker}
+      />
+
+      <InfoTable
         ticker={ticker}
       />
 

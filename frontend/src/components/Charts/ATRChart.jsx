@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-import { getATRs } from "../services/api";
+import { getATRs } from "../../services/api";
+import { baseChartOptions, chartHeight } from "./ChartDefaults";
 
 export default function ATRChart({ ticker, period }) {
   const [series, setSeries] = useState([]);
@@ -12,15 +13,16 @@ export default function ATRChart({ ticker, period }) {
 
       const atrs = await getATRs(ticker, period);
       const atrsData = atrs.map(p => ({
-        x: new Date(p.date_time),
-        y: [p.atr]
+        x: p.date_time,
+        y: p.atr
       }));
 
       setSeries([
         {
             name: "ATR",
             type: "line",
-            data: atrsData
+            data: atrsData,
+            color: "var(--link-colour)"
         }
       ]);
 
@@ -31,34 +33,26 @@ export default function ATRChart({ ticker, period }) {
   }, [ticker, period]);
 
   const options = {
+    ...baseChartOptions,
     chart: {
       animations: {
         enabled: false
       },
-      type: "line",
-      height: 200
-    },
-    xaxis: {
-      type: "datetime"
-    },
-    yaxis: {
-      tooltip: { enabled: true }
-    },
-    tooltip: {
-      enabled: true
+      type: "line"
     }
   };
 
   if (loading) return <div>Loading chart...</div>;
 
   return (
-  <div className="chart-card">
-    <Chart
-      options={options}
-      series={series}
-      type="line"
-      height={400}
-    />
-  </div>
-);
+    <div className="chart-card">
+      <h2>ATR Chart - {period}</h2>
+      <Chart
+        options={options}
+        series={series}
+        type="line"
+        height={chartHeight}
+      />
+    </div>
+  );
 }

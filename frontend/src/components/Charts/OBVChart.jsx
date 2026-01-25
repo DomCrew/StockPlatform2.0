@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-import { getOBVs } from "../services/api";
+import { getOBVs } from "../../services/api";
+import { baseChartOptions, chartHeight } from "./ChartDefaults";
 
 export default function OBVChart({ ticker, period }) {
   const [series, setSeries] = useState([]);
@@ -12,15 +13,16 @@ export default function OBVChart({ ticker, period }) {
 
       const obv = await getOBVs(ticker, period);
       const obvLineData = obv.map(p => ({
-        x: new Date(p.date_time),
-        y: [p.obv]
+        x: p.date_time,
+        y: p.obv
       }));
 
       setSeries([
         {
             name: "OBV",
             type: "line",
-            data: obvLineData
+            data: obvLineData,
+            color: "var(--link-colour)"
         }
       ]);
 
@@ -31,34 +33,26 @@ export default function OBVChart({ ticker, period }) {
   }, [ticker, period]);
 
   const options = {
+    ...baseChartOptions,
     chart: {
       animations: {
         enabled: false
       },
-      type: "line",
-      height: 200
-    },
-    xaxis: {
-      type: "datetime"
-    },
-    yaxis: {
-      tooltip: { enabled: true }
-    },
-    tooltip: {
-      enabled: true
+      type: "line"
     }
   };
 
   if (loading) return <div>Loading chart...</div>;
 
   return (
-  <div className="chart-card">
-    <Chart
-      options={options}
-      series={series}
-      type="line"
-      height={400}
-    />
-  </div>
-);
+    <div className="chart-card">
+      <h2>OBV CHART - {period}</h2>
+      <Chart
+        options={options}
+        series={series}
+        type="line"
+        height={chartHeight}
+      />
+    </div>
+  );
 }

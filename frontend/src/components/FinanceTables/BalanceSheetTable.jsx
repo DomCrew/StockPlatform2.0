@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getBalanceSheets } from "../services/api";
+import { getBalanceSheets } from "../../services/api";
 
 export default function BalanceSheetTable({ ticker }) {
   const [balanceSheets, setBalanceSheets] = useState(null);
@@ -16,7 +16,8 @@ export default function BalanceSheetTable({ ticker }) {
   if (balanceSheets == null) return <h3>Fetching ...</h3>;
 
   return (
-  <div>
+  <div class="table-card">
+    <h2>Balance Sheet</h2>
     <table>
       <thead>
         <tr>

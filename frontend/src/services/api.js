@@ -40,7 +40,12 @@ export async function getLatestPrice(ticker) {
     `${BASE_URL}/stocks/${ticker}/latestprice`
   );
   const data = await res.json()
-  return data.latest_price;
+  if (data.diff.percentage < 0) {
+    data.colour = "var(--pink)"
+  } else {
+    data.colour = "var(--green)"
+  }
+  return data;
 }
 
 export async function getStockInfo(ticker) {
@@ -63,7 +68,7 @@ export async function getArticles(ticker, limit=10) {
   );
   const articles = await res.json();
   for (let i = 0; i < articles.length; i++) {
-    articles[i].colour = articles[i].sa_label === "positive" ? "green" : (articles[i].sa_label === "negative" ? "red" : "orange");
+    articles[i].colour = articles[i].sa_label === "positive" ? "var(--green)" : (articles[i].sa_label === "negative" ? "var(--pink)" : "var(--orange)");
   }
   return articles;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getIncomeStatements } from "../services/api";
+import { getIncomeStatements } from "../../services/api";
 
 export default function IncomeStatementTable({ ticker }) {
   const [incomeStatements, setIncomeStatements] = useState(null);
@@ -16,7 +16,8 @@ export default function IncomeStatementTable({ ticker }) {
   if (incomeStatements == null) return <h3>Fetching ...</h3>;
 
   return (
-  <div>
+  <div class="table-card">
+    <h2>Income Statement</h2>
     <table>
       <thead>
         <tr>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-import { getVolumes } from "../services/api";
+import { getVolumes } from "../../services/api";
+import { baseChartOptions, chartHeight } from "./ChartDefaults";
 
 export default function VolumeChart({ ticker, period }) {
   const [series, setSeries] = useState([]);
@@ -12,15 +13,16 @@ export default function VolumeChart({ ticker, period }) {
 
       const volumes = await getVolumes(ticker, period);
       const volumesData = volumes.map(p => ({
-        x: new Date(p.date),
-        y: [p.volume]
+        x: p.date,
+        y: p.volume
       }));
 
       setSeries([
         {
             name: "Volume",
             type: "bar",
-            data: volumesData
+            data: volumesData,
+            color: "var(--link-colour)"
         }
       ]);
 
@@ -31,34 +33,29 @@ export default function VolumeChart({ ticker, period }) {
   }, [ticker, period]);
 
   const options = {
+    ...baseChartOptions,
     chart: {
       animations: {
         enabled: false
       },
-      type: "bar",
-      height: 400
+      type: "bar"
     },
-    xaxis: {
-      type: "datetime"
-    },
-    yaxis: {
-      tooltip: { enabled: true }
-    },
-    tooltip: {
-      enabled: true
+    dataLabels: {
+      enabled: false
     }
   };
 
   if (loading) return <div>Loading chart...</div>;
 
   return (
-  <div className="chart-card">
-    <Chart
-      options={options}
-      series={series}
-      type="bar"
-      height={400}
-    />
-  </div>
-);
+    <div className="chart-card">
+      <h2>Volume Chart - {period}</h2>
+      <Chart
+        options={options}
+        series={series}
+        type="bar"
+        height={chartHeight}
+      />
+    </div>
+  );
 }

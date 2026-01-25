@@ -16,7 +16,7 @@ export default function DailyTable({ ticker }) {
   if (daily == null) return <h3>Fetching ...</h3>;
 
   return (
-    <div>
+    <div class="table-card">
       <p><strong>Trailing PE</strong> {daily[0].trailing_pe}</p>
       <p><strong>Forward PE</strong> {daily[0].forward_pe}</p>
       <p><strong>Trailing PEG Ratio</strong> {daily[0].trailing_peg_ratio}</p>
