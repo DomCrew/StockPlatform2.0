@@ -28,40 +28,9 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-# e.g. http://127.0.0.1:8000/stocks/amzn/prices?period=weekly
-@app.get("/stocks/{ticker}/prices")
-def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
-    prices = dbm.get_prices(ticker, period)
-    dbm.close_connection()
-    prices = utils.rename_keys_in_dict_list(prices, ["date", "open", "close", "high", "low"])
-    return prices
-
-# e.g. http://127.0.0.1:8000/stocks/amzn/smas?period=weekly
-@app.get("/stocks/{ticker}/smas")
-def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
-    prices = dbm.get_prices(ticker, period)
-    dbm.close_connection()
-    smas = get_smas(pd.DataFrame(prices))
-    return smas
-
-# e.g. http://127.0.0.1:8000/stocks/amzn/volumes?period=weekly
-@app.get("/stocks/{ticker}/volumes")
-def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
-    volumes = dbm.get_volumes(ticker, period)
-    dbm.close_connection()
-    volumes = utils.rename_keys_in_dict_list(volumes, ["date", "volume"])
-    return volumes
-
 # e.g. http://127.0.0.1:8000/stocks/amzn/latestprice
 @app.get("/stocks/{ticker}/latestprice")
 def read_item(ticker: str):
-    load_dotenv()
     latest = get_latest_price(ticker)
     return {"latest_price": latest,
             "time": datetime.today(),
@@ -70,8 +39,7 @@ def read_item(ticker: str):
 # e.g. http://127.0.0.1:8000/stocks/amzn/info
 @app.get("/stocks/{ticker}/info")
 def read_item(ticker: str):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     info = dbm.get_info(ticker)
     dbm.close_connection()
     return info
@@ -79,8 +47,7 @@ def read_item(ticker: str):
 # e.g. http://127.0.0.1:8000/stocks/amzn/daily
 @app.get("/stocks/{ticker}/daily")
 def read_item(ticker: str):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     daily = dbm.get_stock_daily(ticker)
     dbm.close_connection()
     return daily
@@ -88,17 +55,17 @@ def read_item(ticker: str):
 # e.g. http://127.0.0.1:8000/stocks/amzn/articles?limit=5
 @app.get("/stocks/{ticker}/articles")
 def read_item(ticker: str, limit: Union[int, None] = 10):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     articles = dbm.get_articles(ticker, limit)
     dbm.close_connection()
     return articles
 
+# Finance tables
+
 #http://127.0.0.1:8000/stocks/amzn/cashflows
 @app.get("/stocks/{ticker}/cashflows")
 def read_item(ticker: str):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     cash_flows = dbm.get_cash_flows(ticker)
     dbm.close_connection()
     return cash_flows
@@ -106,8 +73,7 @@ def read_item(ticker: str):
 #http://127.0.0.1:8000/stocks/amzn/incomestatements
 @app.get("/stocks/{ticker}/incomestatements")
 def read_item(ticker: str):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     income_statement = dbm.get_income_statements(ticker)
     dbm.close_connection()
     return income_statement
@@ -115,17 +81,44 @@ def read_item(ticker: str):
 #http://127.0.0.1:8000/stocks/amzn/balancesheets
 @app.get("/stocks/{ticker}/balancesheets")
 def read_item(ticker: str):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     balance_sheet = dbm.get_balance_sheets(ticker)
     dbm.close_connection()
     return balance_sheet
 
+# Chart data
+
+# e.g. http://127.0.0.1:8000/stocks/amzn/prices?period=weekly
+@app.get("/stocks/{ticker}/prices")
+def read_item(ticker: str, period: Union[str, None] = "weekly"):
+    dbm = utils.get_dbm()
+    prices = dbm.get_prices(ticker, period)
+    dbm.close_connection()
+    prices = utils.rename_keys_in_dict_list(prices, ["date", "open", "close", "high", "low"])
+    return prices
+
+# e.g. http://127.0.0.1:8000/stocks/amzn/smas?period=weekly
+@app.get("/stocks/{ticker}/smas")
+def read_item(ticker: str, period: Union[str, None] = "weekly"):
+    dbm = utils.get_dbm()
+    prices = dbm.get_prices(ticker, period)
+    dbm.close_connection()
+    smas = get_smas(pd.DataFrame(prices))
+    return smas
+
+# e.g. http://127.0.0.1:8000/stocks/amzn/volumes?period=weekly
+@app.get("/stocks/{ticker}/volumes")
+def read_item(ticker: str, period: Union[str, None] = "weekly"):
+    dbm = utils.get_dbm()
+    volumes = dbm.get_volumes(ticker, period)
+    dbm.close_connection()
+    volumes = utils.rename_keys_in_dict_list(volumes, ["date", "volume"])
+    return volumes
+
 #http://127.0.0.1:8000/stocks/amzn/ccis?period=weekly
 @app.get("/stocks/{ticker}/ccis")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     typical_prices = dbm.get_typical_prices(ticker, period)
     cci_values = get_ccis(typical_prices)
     dbm.close_connection()
@@ -134,8 +127,7 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
 #http://127.0.0.1:8000/stocks/amzn/macd?period=weekly
 @app.get("/stocks/{ticker}/macd")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     prices = dbm.get_prices(ticker, period)
     dbm.close_connection()
     return get_macds(prices)
@@ -143,18 +135,17 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
 #http://127.0.0.1:8000/stocks/amzn/obvs?period=weekly
 @app.get("/stocks/{ticker}/obvs")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     volume = dbm.get_volumes(ticker, period)
     prices = dbm.get_prices(ticker, period)
     history = utils.merge_lists_by_date_time(prices, volume)
     dbm.close_connection()
     return get_obvs(history)
 
+#http://127.0.0.1:8000/stocks/amzn/atrs?period=weekly
 @app.get("/stocks/{ticker}/atrs")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
-    load_dotenv()
-    dbm = DatabaseManager()
+    dbm = utils.get_dbm()
     prices = dbm.get_prices(ticker, period)
     dbm.close_connection()
     return get_atrs(prices)

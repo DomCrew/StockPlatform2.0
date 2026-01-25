@@ -1,4 +1,10 @@
+from dotenv import load_dotenv
+
 from database.database import DatabaseManager
+
+def get_dbm() -> DatabaseManager:
+    load_dotenv()
+    return DatabaseManager()
 
 def rename_keys_in_dict_list(l: list, keys: list) -> list:
     """
