@@ -39,6 +39,7 @@ BEGIN
         exchange_p,
         country_p,
         NOW()
+    )
     ON CONFLICT (ticker)
     DO UPDATE SET
         long_name = EXCLUDED.long_name,
@@ -50,6 +51,5 @@ BEGIN
         exchange = EXCLUDED.exchange,
         country = EXCLUDED.country,
         last_updated = NOW();
-    );
 END;
 $$;
