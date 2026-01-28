@@ -1,5 +1,5 @@
 from collection.finance import get_history, get_income_statement, get_info, get_cash_flow, get_balance_sheet, get_news
-#from collection.sentiment_analysis import get_news_and_sentiment
+# from collection.sentiment_analysis import get_news_and_sentiment
 from database.database import DatabaseManager
 from dotenv import load_dotenv
 
@@ -19,20 +19,21 @@ if __name__ == "__main__":
     dbm.insert_stock("aapl", info)
     dbm.insert_stock_daily("aapl", info)
 
-
     history = get_history("aapl")
     dbm.insert_history("aapl", history)
 
-    #news = get_news("aapl", 10)
-    #articles = get_news_and_sentiment("amzn", 10, news)
-    #dbm.insert_articles("amzn", articles)
+    # news = get_news("aapl", 10)
+    # articles = get_news_and_sentiment("amzn", 10, news)
+    # dbm.insert_articles("amzn", articles)
 
-    #news = get_news("aapl", 10)
-    #articles = get_news_and_sentiment("aapl", 10, news)
-    #dbm.insert_articles("aapl", articles)
+    # news = get_news("aapl", 10)
+    # articles = get_news_and_sentiment("aapl", 10, news)
+    # dbm.insert_articles("aapl", articles)
 
-    dbm.insert_article("amzn", "Test example headline", "Example Summary", "https:www.example.co.uk", "2023-12-12 10:11:12", "Positive", "0.3456789")
-    dbm.insert_article("aapl", "Test example headline", "Example Summary", "https:www.example.co.uk", "2023-12-12 10:11:12", "Positive", "0.3456789")
+    dbm.insert_article("amzn", "Test example headline", "Example Summary",
+                       "https:www.example.co.uk", "2023-12-12 10:11:12", "Positive", "0.3456789")
+    dbm.insert_article("aapl", "Test example headline", "Example Summary",
+                       "https:www.example.co.uk", "2023-12-12 10:11:12", "Positive", "0.3456789")
 
     cash_flows = get_cash_flow("amzn")
     dbm.insert_cash_flows("amzn", cash_flows)

@@ -2,9 +2,11 @@ from dotenv import load_dotenv
 
 from database.database import DatabaseManager
 
+
 def get_dbm() -> DatabaseManager:
     load_dotenv()
     return DatabaseManager()
+
 
 def rename_keys_in_dict_list(l: list, keys: list) -> list:
     """
@@ -17,8 +19,9 @@ def rename_keys_in_dict_list(l: list, keys: list) -> list:
             if key is not None:
                 dict[key] = list(item.values())[x]
         l[i] = dict
-    
+
     return l
+
 
 def get_price_change_from_previous(ticker: str, latest_price: int) -> dict:
     """
@@ -31,6 +34,7 @@ def get_price_change_from_previous(ticker: str, latest_price: int) -> dict:
         "previous": previous_close,
         "percentage": round(((latest_price - previous_close) / previous_close) * 100, 2)
     }
+
 
 def merge_lists_by_date_time(list1: list, list2: list) -> list:
     """

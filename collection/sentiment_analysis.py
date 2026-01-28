@@ -1,6 +1,7 @@
 """Module for sentiment analysis of finance articles"""
 from transformers import pipeline
 
+
 def get_news_and_sentiment(ticker: str, count: int, news: list):
     """ Returns latest news and their sentiment for a given ticker """
     titles = [f"{article["title"]}. {article["summary"]}" for article in news]
@@ -17,6 +18,7 @@ def get_news_and_sentiment(ticker: str, count: int, news: list):
         article["sa_score"] = sentiment["score"]
 
     return news
+
 
 if __name__ == "__main__":
     print(get_news_and_sentiment("AAPL", 5))

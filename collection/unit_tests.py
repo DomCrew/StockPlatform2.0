@@ -2,6 +2,7 @@ import pytest
 
 from collection.finance import obv_map_function, true_range_map_function, get_ccis, get_obvs
 
+
 @pytest.mark.parametrize("row, prev_obv, expected", [
     ({"close_p": 105, "open_p": 100, "volume_q": 1000}, 5000, 6000),
     ({"close_p": 95, "open_p": 100, "volume_q": 1000}, 5000, 4000),
@@ -10,6 +11,7 @@ from collection.finance import obv_map_function, true_range_map_function, get_cc
 def test_obv_map_function(row, prev_obv, expected):
     assert obv_map_function(row, prev_obv) == expected
 
+
 @pytest.mark.parametrize("row, prev_close, expected", [
     ({"high_p": 110, "low_p": 90}, 100, 20),
     ({"high_p": 120, "low_p": 80}, 100, 40),
@@ -17,6 +19,7 @@ def test_obv_map_function(row, prev_obv, expected):
 ])
 def test_true_range_map_function(row, prev_close, expected):
     assert true_range_map_function(row, prev_close) == expected
+
 
 def test_get_ccis():
     input_list = [

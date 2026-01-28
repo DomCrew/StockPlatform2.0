@@ -5,18 +5,22 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
+
 def get_history(ticker: str) -> pd.DataFrame:
     """ Returns historical prices for a given ticker """
-    history = yf.Ticker(ticker).history(interval="1h",period="2y")
+    history = yf.Ticker(ticker).history(interval="1h", period="2y")
     return history.reset_index()
+
 
 def get_info(ticker: str) -> dict:
     """ Returns company info for a given ticker """
     return yf.Ticker(ticker).info
 
+
 def get_latest_price(ticker: str) -> float:
     """ Returns current price of the stock """
     return round(yf.Ticker(ticker).fast_info["lastPrice"], 2)
+
 
 def get_news(ticker: str, count: int) -> list:
     """ Returns latest news for a given ticker """
@@ -27,6 +31,7 @@ def get_news(ticker: str, count: int) -> list:
         "link": item["content"]["canonicalUrl"].get("url"),
         "date_time": item["content"].get("pubDate")
     } for item in news]
+
 
 def get_balance_sheet(ticker: str) -> pd.DataFrame:
     """ Returns balance sheet for a given ticker """
@@ -54,10 +59,10 @@ def get_balance_sheet(ticker: str) -> pd.DataFrame:
         balance_sheet.index.intersection(rows_to_keep.keys())
     ].T.reset_index()
 
-
     new_columns = [rows_to_keep[row] for row in balance_sheet.columns[1:]]
     balance_sheet.columns = ["date_time"] + new_columns
     return balance_sheet
+
 
 def get_income_statement(ticker: str) -> pd.DataFrame:
     """ Returns income statement for a given ticker """
@@ -90,6 +95,7 @@ def get_income_statement(ticker: str) -> pd.DataFrame:
 
     return income_statement
 
+
 def get_cash_flow(ticker: str) -> pd.DataFrame:
     """ Returns cash flow statement for a given ticker """
     cash_flow = yf.Ticker(ticker).cashflow
@@ -118,6 +124,7 @@ def get_cash_flow(ticker: str) -> pd.DataFrame:
     cash_flow.columns = ["date_time"] + new_columns
     return cash_flow
 
+
 def get_smas(history_df: pd.DataFrame) -> pd.DataFrame:
     """ Returns simple moving averages of close prices """
     sma_df = pd.DataFrame({
@@ -128,6 +135,7 @@ def get_smas(history_df: pd.DataFrame) -> pd.DataFrame:
     })
     sma_df = sma_df.replace({np.nan: None})
     return sma_df.to_dict(orient="records")
+
 
 def get_ccis(typical_prices: list) -> list:
     """Returns a list of commodity channel indexes"""
@@ -141,8 +149,10 @@ def get_ccis(typical_prices: list) -> list:
         )
     })
 
-    calc_df["CCI"] = (calc_df["TP"] - calc_df["20DaySMAofTP"])/(0.015 * calc_df["20DayMeanDevofTP"])
+    calc_df["CCI"] = (calc_df["TP"] - calc_df["20DaySMAofTP"]
+                      )/(0.015 * calc_df["20DayMeanDevofTP"])
     return calc_df.dropna().to_dict(orient="records")
+
 
 def get_macds(history: list) -> list:
     """Returns a list of MACD dictionaries"""
@@ -159,10 +169,12 @@ def get_macds(history: list) -> list:
         "macd_line": exp1 - exp2
     })
 
-    macd_df["signal_line"] = macd_df["macd_line"].ewm(span=9, adjust=False).mean()
+    macd_df["signal_line"] = macd_df["macd_line"].ewm(
+        span=9, adjust=False).mean()
     macd_df["histogram"] = macd_df["macd_line"] - macd_df["signal_line"]
 
     return macd_df.to_dict(orient="records")
+
 
 def obv_map_function(row, prev_obv):
     """Returns on balance volume"""
@@ -174,12 +186,14 @@ def obv_map_function(row, prev_obv):
 
     return prev_obv
 
+
 def true_range_map_function(row, prev_close):
     """Returns true range"""
     high_low = row["high_p"] - row["low_p"]
     high_prev_close = abs(row["high_p"] - prev_close)
     low_prev_close = abs(row["low_p"] - prev_close)
     return max(high_low, high_prev_close, low_prev_close)
+
 
 def get_obvs(history: list) -> list:
     """Returns a list of on balance volumes"""
@@ -193,6 +207,7 @@ def get_obvs(history: list) -> list:
         })
         prev_obv = current_obv
     return obv_list
+
 
 def get_atrs(prices: list) -> list:
     """Returns a list of average true ranges"""
@@ -221,6 +236,7 @@ def get_atrs(prices: list) -> list:
         })
 
     return atrs
+
 
 if __name__ == "__main__":
     print(get_news("AAPL", 1))

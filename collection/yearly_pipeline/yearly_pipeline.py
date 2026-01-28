@@ -3,6 +3,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 from database import DatabaseManager
 from finance import get_info, get_income_statement, get_cash_flow, get_balance_sheet
+import utils
+
 
 def yearly_pipeline(ticker: str) -> str:
     dbm = DatabaseManager()
@@ -16,15 +18,16 @@ def yearly_pipeline(ticker: str) -> str:
         dbm.insert_balance_sheet(ticker, bs)
         dbm.insert_income_statement(ticker, ist)
         dbm.insert_cash_flow(ticker, cf)
-        
+
         return f"{ticker} pipeline finished"
     finally:
         dbm.close_connection()
 
+
 if __name__ == "__main__":
     load_dotenv()
     dbm = DatabaseManager()
-    tickers = dbm.get_tickers()
+    tickers = utils.make_get_request("stocks/")
     dbm.close_connection()
 
     print("Starting yearly pipeline")

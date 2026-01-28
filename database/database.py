@@ -6,23 +6,34 @@ from psycopg2.extras import RealDictCursor
 
 from database import database_utils
 
+
 class DatabaseManager:
     def __init__(self):
         self.connection = database_utils.get_connection()
 
     def setup_db(self) -> None:
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/schema.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/stocks_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/stocks_daily_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/history_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/articles_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/article_stock_assignments_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/cash_flows_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/income_statements_table.sql')
-        database_utils.execute_sql_file(self.connection, 'database/sql/schema/balance_sheets_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/schema.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/stocks_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/stocks_daily_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/history_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/articles_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/article_stock_assignments_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/cash_flows_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/income_statements_table.sql')
+        database_utils.execute_sql_file(
+            self.connection, 'database/sql/schema/balance_sheets_table.sql')
 
         for path in os.listdir('database/sql/functions'):
-            database_utils.execute_sql_file(self.connection, f'database/sql/functions/{path}')
+            database_utils.execute_sql_file(
+                self.connection, f'database/sql/functions/{path}')
 
     def reset_db(self) -> None:
         with self.connection as conn:
@@ -35,19 +46,19 @@ class DatabaseManager:
         with self.connection as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
                 curs.execute("SELECT * FROM stockplatform.insert_stock(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                            (ticker,
-                             info["shortName"],
-                             info["longBusinessSummary"],
-                             info["sector"],
-                             info["industry"],
-                             info["fullTimeEmployees"],
-                             info["currency"],
-                             info["fullExchangeName"],
-                             info["country"]))
+                             (ticker,
+                              info["shortName"],
+                              info["longBusinessSummary"],
+                              info["sector"],
+                              info["industry"],
+                              info["fullTimeEmployees"],
+                              info["currency"],
+                              info["fullExchangeName"],
+                              info["country"]))
 
         self.connection.commit()
 
-    def insert_stock_daily(self, ticker:str, info: dict) -> None:
+    def insert_stock_daily(self, ticker: str, info: dict) -> None:
         stock_id = self.get_stock_id_from_ticker(ticker)
 
         with self.connection as conn:
@@ -69,13 +80,15 @@ class DatabaseManager:
     def get_stock_id_from_ticker(self, ticker: str) -> str:
         with self.connection as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
-                curs.execute("SELECT stock_id FROM stockplatform.stocks WHERE ticker = %s",(ticker,))
+                curs.execute(
+                    "SELECT stock_id FROM stockplatform.stocks WHERE ticker = %s", (ticker,))
                 stock_id = curs.fetchall()[0]['stock_id']
-        
+
         return stock_id
 
     def insert_history(self, ticker: str, history: pd.DataFrame) -> None:
-        history.columns = ['date_time', 'open', 'high', 'low', 'close', 'volume', 'dividends', 'stock_splits']
+        history.columns = ['date_time', 'open', 'high', 'low',
+                           'close', 'volume', 'dividends', 'stock_splits']
         history['stock_id'] = self.get_stock_id_from_ticker(ticker)
         history.to_sql(
             name="history",
@@ -120,7 +133,7 @@ class DatabaseManager:
             method="multi"
         )
         self.connection.commit()
-    
+
     def insert_income_statements(self, ticker: str, income_statement_df: pd.DataFrame) -> None:
         stock_id = self.get_stock_id_from_ticker(ticker)
         income_statement_df['stock_id'] = stock_id
@@ -156,7 +169,7 @@ class DatabaseManager:
         stock_id = self.get_stock_id_from_ticker(ticker)
         sql_query = "SELECT * FROM stockplatform.get_prices(%s, %s)"
         return database_utils.execute_sql_query(self.connection, sql_query, (stock_id, period))
-    
+
     def get_typical_prices(self, ticker: str, period: str):
         stock_id = self.get_stock_id_from_ticker(ticker)
         sql_query = "SELECT * FROM stockplatform.get_typical_prices(%s, %s)"
@@ -199,7 +212,7 @@ class DatabaseManager:
     def get_tickers(self) -> list:
         """Returns a list of all tickers in the stocks table"""
         sql_query = "SELECT ticker FROM stockplatform.stocks"
-        return [row["ticker"] for row in database_utils.execute_sql_query(self.connection, sql_query,())]
+        return [row["ticker"] for row in database_utils.execute_sql_query(self.connection, sql_query, ())]
 
     def close_connection(self) -> None:
         self.connection.close()

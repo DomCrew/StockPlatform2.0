@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import pandas as pd
+from pydantic import BaseModel
 
 from collection.finance import get_atrs, get_obvs, get_smas, get_latest_price, get_ccis, get_macds
 from database.database import DatabaseManager
@@ -24,11 +25,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
+# e.g. http://127.0.0.1:8000/stocks/
+
+
+@app.get("/stocks")
+def read_root():
+    dbm = utils.get_dbm()
+    tickers = dbm.get_tickers()
+    dbm.close_connection()
+    return tickers
+
 # e.g. http://127.0.0.1:8000/stocks/amzn/latestprice
+
+
 @app.get("/stocks/{ticker}/latestprice")
 def read_item(ticker: str):
     latest = get_latest_price(ticker)
@@ -37,6 +51,8 @@ def read_item(ticker: str):
             "diff": utils.get_price_change_from_previous(ticker, latest)}
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/info
+
+
 @app.get("/stocks/{ticker}/info")
 def read_item(ticker: str):
     dbm = utils.get_dbm()
@@ -45,6 +61,8 @@ def read_item(ticker: str):
     return info
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/daily
+
+
 @app.get("/stocks/{ticker}/daily")
 def read_item(ticker: str):
     dbm = utils.get_dbm()
@@ -53,6 +71,8 @@ def read_item(ticker: str):
     return daily
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/articles?limit=5
+
+
 @app.get("/stocks/{ticker}/articles")
 def read_item(ticker: str, limit: Union[int, None] = 10):
     dbm = utils.get_dbm()
@@ -62,7 +82,9 @@ def read_item(ticker: str, limit: Union[int, None] = 10):
 
 # Finance tables
 
-#http://127.0.0.1:8000/stocks/amzn/cashflows
+# http://127.0.0.1:8000/stocks/amzn/cashflows
+
+
 @app.get("/stocks/{ticker}/cashflows")
 def read_item(ticker: str):
     dbm = utils.get_dbm()
@@ -70,7 +92,9 @@ def read_item(ticker: str):
     dbm.close_connection()
     return cash_flows
 
-#http://127.0.0.1:8000/stocks/amzn/incomestatements
+# http://127.0.0.1:8000/stocks/amzn/incomestatements
+
+
 @app.get("/stocks/{ticker}/incomestatements")
 def read_item(ticker: str):
     dbm = utils.get_dbm()
@@ -78,7 +102,9 @@ def read_item(ticker: str):
     dbm.close_connection()
     return income_statement
 
-#http://127.0.0.1:8000/stocks/amzn/balancesheets
+# http://127.0.0.1:8000/stocks/amzn/balancesheets
+
+
 @app.get("/stocks/{ticker}/balancesheets")
 def read_item(ticker: str):
     dbm = utils.get_dbm()
@@ -89,15 +115,20 @@ def read_item(ticker: str):
 # Chart data
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/prices?period=weekly
+
+
 @app.get("/stocks/{ticker}/prices")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
     prices = dbm.get_prices(ticker, period)
     dbm.close_connection()
-    prices = utils.rename_keys_in_dict_list(prices, ["date", "open", "close", "high", "low"])
+    prices = utils.rename_keys_in_dict_list(
+        prices, ["date", "open", "close", "high", "low"])
     return prices
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/smas?period=weekly
+
+
 @app.get("/stocks/{ticker}/smas")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
@@ -107,6 +138,8 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     return smas
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/volumes?period=weekly
+
+
 @app.get("/stocks/{ticker}/volumes")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
@@ -115,7 +148,9 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     volumes = utils.rename_keys_in_dict_list(volumes, ["date", "volume"])
     return volumes
 
-#http://127.0.0.1:8000/stocks/amzn/ccis?period=weekly
+# http://127.0.0.1:8000/stocks/amzn/ccis?period=weekly
+
+
 @app.get("/stocks/{ticker}/ccis")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
@@ -124,7 +159,9 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm.close_connection()
     return cci_values
 
-#http://127.0.0.1:8000/stocks/amzn/macd?period=weekly
+# http://127.0.0.1:8000/stocks/amzn/macd?period=weekly
+
+
 @app.get("/stocks/{ticker}/macd")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
@@ -132,7 +169,9 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm.close_connection()
     return get_macds(prices)
 
-#http://127.0.0.1:8000/stocks/amzn/obvs?period=weekly
+# http://127.0.0.1:8000/stocks/amzn/obvs?period=weekly
+
+
 @app.get("/stocks/{ticker}/obvs")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
@@ -142,10 +181,41 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm.close_connection()
     return get_obvs(history)
 
-#http://127.0.0.1:8000/stocks/amzn/atrs?period=weekly
+# http://127.0.0.1:8000/stocks/amzn/atrs?period=weekly
+
+
 @app.get("/stocks/{ticker}/atrs")
 def read_item(ticker: str, period: Union[str, None] = "weekly"):
     dbm = utils.get_dbm()
     prices = dbm.get_prices(ticker, period)
     dbm.close_connection()
     return get_atrs(prices)
+
+
+class HistoryCreate(BaseModel):
+    ticker: str
+    date_time: str
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+    dividends: float
+    stock_splits: float
+
+
+@app.post("/internal/create_history/")
+async def create_history(history_data: HistoryCreate):
+    history_df = pd.DataFrame({
+        "date_time": [history_data.date_time],
+        "open": [history_data.open],
+        "high": [history_data.high],
+        "low": [history_data.low],
+        "close": [history_data.close],
+        "volume": [history_data.volume],
+        "dividends": [history_data.dividends],
+        "stock_splits": [history_data.stock_splits]
+    })
+    dbm = utils.get_dbm()
+    dbm.insert_history(history_data.ticker, history_df)
+    dbm.close_connection()

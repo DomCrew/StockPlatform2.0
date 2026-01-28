@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from database import DatabaseManager
 from sentiment_analysis import get_news_and_sentiment
 from finance import get_info
+import utils
+
 
 def daily_pipeline(ticker: str) -> str:
     dbm = DatabaseManager()
@@ -15,10 +17,11 @@ def daily_pipeline(ticker: str) -> str:
     finally:
         dbm.close_connection()
 
+
 if __name__ == "__main__":
     load_dotenv()
     dbm = DatabaseManager()
-    tickers = dbm.get_tickers()
+    tickers = utils.make_get_request("stocks/")
     dbm.close_connection()
 
     print("Starting daily pipeline")
