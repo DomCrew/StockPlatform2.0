@@ -100,25 +100,26 @@ class DatabaseManager:
         )
         self.connection.commit()
 
-    def insert_article(self, ticker: str, title: str, summary: str, link: str, datetime: str, sa_label: str, sa_score: float) -> None:
-        stock_id = self.get_stock_id_from_ticker(ticker)
+    def insert_article(self, article_dict: dict) -> None:
+        stock_id = self.get_stock_id_from_ticker(article_dict["ticker"])
 
         with self.connection as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
                 curs.execute("SELECT * FROM stockplatform.insert_article(%s, %s, %s, %s, %s, %s, %s)",
-                             (stock_id, title, summary, link, datetime, sa_label, sa_score))
+                             (stock_id,
+                              article_dict["title"],
+                              article_dict["summary"],
+                              article_dict["link"],
+                              article_dict["date_time"],
+                              article_dict["sa_label"],
+                              article_dict["sa_score"]))
         self.connection.commit()
 
     def insert_articles(self, ticker: str, articles: list) -> None:
         for article in articles:
+            article["ticker"] = ticker
             self.insert_article(
-                ticker,
-                article['title'],
-                article['summary'],
-                article['link'],
-                article['date_time'],
-                article['sa_label'],
-                article['sa_score']
+                article
             )
 
     def insert_cash_flows(self, ticker: str, cash_flow_df: pd.DataFrame) -> None:

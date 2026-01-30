@@ -192,7 +192,7 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     return get_atrs(prices)
 
 
-class HistoryCreate(BaseModel):
+class HistoryInsert(BaseModel):
     ticker: str
     date_time: str
     open: float
@@ -204,8 +204,8 @@ class HistoryCreate(BaseModel):
     stock_splits: float
 
 
-@app.post("/internal/create_history/")
-async def create_history(history_data: HistoryCreate):
+@app.post("/internal/insert_history/")
+async def insert_history(history_data: HistoryInsert):
     history_df = pd.DataFrame({
         "date_time": [history_data.date_time],
         "open": [history_data.open],
@@ -218,4 +218,30 @@ async def create_history(history_data: HistoryCreate):
     })
     dbm = utils.get_dbm()
     dbm.insert_history(history_data.ticker, history_df)
+    dbm.close_connection()
+
+
+class ArticleInsert(BaseModel):
+    ticker: str
+    date_time: str
+    title: str
+    summary: str
+    link: str
+    sa_label: str
+    sa_score: float
+
+
+@app.post("/internal/insert_article")
+async def insert_article(article_data: ArticleInsert):
+    article_dict = {
+        "ticker": article_data.ticker,
+        "date_time": article_data.date_time,
+        "title": article_data.title,
+        "summary": article_data.summary,
+        "link": article_data.link,
+        "sa_label": article_data.sa_label,
+        "sa_score": article_data.sa_score
+    }
+    dbm = utils.get_dbm()
+    dbm.insert_article(article_dict)
     dbm.close_connection()

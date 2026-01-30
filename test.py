@@ -30,10 +30,28 @@ if __name__ == "__main__":
     # articles = get_news_and_sentiment("aapl", 10, news)
     # dbm.insert_articles("aapl", articles)
 
-    dbm.insert_article("amzn", "Test example headline", "Example Summary",
-                       "https:www.example.co.uk", "2023-12-12 10:11:12", "Positive", "0.3456789")
-    dbm.insert_article("aapl", "Test example headline", "Example Summary",
-                       "https:www.example.co.uk", "2023-12-12 10:11:12", "Positive", "0.3456789")
+    a1 = {
+        "ticker": "amzn",
+        "title": "Test example headline",
+        "summary": "Example Summary",
+        "link": "https:www.example.co.uk",
+        "date_time": "2023-12-12 10:11:12",
+        "sa_label": "Positive",
+        "sa_score": "0.3456789"
+    }
+
+    a2 = {
+        "ticker": "aapl",
+        "title": "Test example headline",
+        "summary": "Example Summary",
+        "link": "https:www.example.co.uk",
+        "date_time": "2023-12-12 10:11:12",
+        "sa_label": "Positive",
+        "sa_score": "0.3456789"
+    }
+
+    dbm.insert_article(a1)
+    dbm.insert_article(a1)
 
     cash_flows = get_cash_flow("amzn")
     dbm.insert_cash_flows("amzn", cash_flows)

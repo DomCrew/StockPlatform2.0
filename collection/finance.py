@@ -11,7 +11,6 @@ def get_history(ticker: str) -> pd.DataFrame:
     history = yf.Ticker(ticker).history(interval="1h", period="2y")
     return history.reset_index()
 
-
 def get_info(ticker: str) -> dict:
     """ Returns company info for a given ticker """
     return yf.Ticker(ticker).info
@@ -240,3 +239,4 @@ def get_atrs(prices: list) -> list:
 
 if __name__ == "__main__":
     print(get_news("AAPL", 1))
+    print(pipeline_get_history("AAPL"))
