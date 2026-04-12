@@ -58,8 +58,8 @@ class DatabaseManager:
 
         self.connection.commit()
 
-    def insert_stock_daily(self, ticker: str, info: dict) -> None:
-        stock_id = self.get_stock_id_from_ticker(ticker)
+    def insert_stock_daily(self, info: dict) -> None:
+        stock_id = self.get_stock_id_from_ticker(info["ticker"])
 
         with self.connection as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
@@ -74,7 +74,7 @@ class DatabaseManager:
                               info['priceToSalesTrailing12Months'],
                               info['priceToBook'],
                               info['enterpriseToRevenue'],
-                              info['enterpriseToEbitda']))
+                              database_utils.none_to_missing(info.get('enterpriseToEbitda'))))
         self.connection.commit()
 
     def get_stock_id_from_ticker(self, ticker: str) -> str:

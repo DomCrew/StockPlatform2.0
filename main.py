@@ -245,3 +245,41 @@ async def insert_article(article_data: ArticleInsert):
     dbm = utils.get_dbm()
     dbm.insert_article(article_dict)
     dbm.close_connection()
+
+
+class StockDailyInsert(BaseModel):
+    ticker: str
+    date_time: str
+    trailing_pe: float
+    forward_pe: float
+    trailing_peg_ratio: float
+    beta: float
+    market_cap: int
+    enterprise_value: int
+    price_to_sales_trailing_12m: float
+    price_to_book: float
+    enterprise_to_revenue: float
+    enterprise_to_ebitda: float
+
+@app.post("/internal/insert_stock_daily")
+async def insert_stock_daily(stock_daily_data: StockDailyInsert):
+    stock_daily_dict = {
+        "ticker": stock_daily_data.ticker,
+        "date_time": stock_daily_data.date_time,
+        "trailing_pe": stock_daily_data.float,
+        "forward_pe": stock_daily_data.forward_pe,
+        "trailing_peg_ratio": stock_daily_data.trailing_peg_ratio,
+        "beta": stock_daily_data.beta,
+        "market_cap": stock_daily_data.market_cap,
+        "enterprise_value": stock_daily_data.enterprise_value,
+        "price_to_sales_trailing_12m": stock_daily_data.price_to_sales_trailing_12m,
+        "price_to_book": stock_daily_data.price_to_book,
+        "enterprise_to_revenue": stock_daily_data.enterprise_to_revenue,
+        "enterprise_to_ebitda": stock_daily_data.enterprise_to_ebitda,
+    }
+    dbm = utils.get_dbm()
+    dbm.insert_article(stock_daily_dict)
+    dbm.close_connection()
+
+
+#cash flow, balance sheet, income statement inserts

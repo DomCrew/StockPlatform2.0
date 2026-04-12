@@ -3,24 +3,34 @@ from collection.finance import get_history, get_income_statement, get_info, get_
 from database.database import DatabaseManager
 from dotenv import load_dotenv
 
+TEST_TICKERS = ["amzn", "aapl", "dis", "jpm"]
+
+def insert_test_data(dbm: DatabaseManager, ticker: str):
+    info = get_info(ticker)
+    dbm.insert_stock(ticker, info)
+    info['ticker'] = ticker
+    dbm.insert_stock_daily(info)
+
+    history = get_history(ticker)
+    dbm.insert_history(ticker, history)
+
+def insert_sheets(dbm: DatabaseManager, ticker: str):
+    cash_flows = get_cash_flow(ticker)
+    dbm.insert_cash_flows(ticker, cash_flows)
+
+    income_statement = get_income_statement(ticker)
+    dbm.insert_income_statements(ticker, income_statement)
+
+    balance_sheet = get_balance_sheet(ticker)
+    dbm.insert_balance_sheets(ticker, balance_sheet)
+
 if __name__ == "__main__":
     load_dotenv()
     dbm = DatabaseManager()
     dbm.reset_db()
 
-    info = get_info("amzn")
-    dbm.insert_stock("amzn", info)
-    dbm.insert_stock_daily("amzn", info)
-
-    history = get_history("amzn")
-    dbm.insert_history("amzn", history)
-
-    info = get_info("aapl")
-    dbm.insert_stock("aapl", info)
-    dbm.insert_stock_daily("aapl", info)
-
-    history = get_history("aapl")
-    dbm.insert_history("aapl", history)
+    for ticker in TEST_TICKERS:
+        insert_test_data(dbm, ticker)
 
     # news = get_news("aapl", 10)
     # articles = get_news_and_sentiment("amzn", 10, news)
@@ -50,27 +60,32 @@ if __name__ == "__main__":
         "sa_score": "0.3456789"
     }
 
+    a3 = {
+        "ticker": "dis",
+        "title": "Disney hires Hyunji",
+        "summary": "Example Summary",
+        "link": "https:www.example2.co.uk",
+        "date_time": "2023-12-12 10:11:12",
+        "sa_label": "Positive",
+        "sa_score": "0.3456789"
+    }
+
+    a4 = {
+        "ticker": "jpm",
+        "title": "JPMorgan Chase reports earnings",
+        "summary": "Example Summary",
+        "link": "https:www.example3.co.uk",
+        "date_time": "2023-12-12 10:11:12",
+        "sa_label": "Positive",
+        "sa_score": "0.3456789"
+    }
+
     dbm.insert_article(a1)
-    dbm.insert_article(a1)
+    dbm.insert_article(a2)
+    dbm.insert_article(a3)
+    dbm.insert_article(a4)
 
-    cash_flows = get_cash_flow("amzn")
-    dbm.insert_cash_flows("amzn", cash_flows)
-
-    income_statement = get_income_statement("amzn")
-    dbm.insert_income_statements("amzn", income_statement)
-
-    balance_sheet = get_balance_sheet("amzn")
-    dbm.insert_balance_sheets("amzn", balance_sheet)
-
-    cash_flows = get_cash_flow("aapl")
-    dbm.insert_cash_flows("aapl", cash_flows)
-
-    income_statement = get_income_statement("aapl")
-    dbm.insert_income_statements("aapl", income_statement)
-
-    balance_sheet = get_balance_sheet("aapl")
-    dbm.insert_balance_sheets("aapl", balance_sheet)
-
-    print(dbm.get_tickers())
+    for ticker in TEST_TICKERS:
+        insert_sheets(dbm, ticker)
 
     dbm.close_connection()
