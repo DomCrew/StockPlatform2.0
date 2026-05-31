@@ -266,7 +266,7 @@ async def insert_stock_daily(stock_daily_data: StockDailyInsert):
     stock_daily_dict = {
         "ticker": stock_daily_data.ticker,
         "date_time": stock_daily_data.date_time,
-        "trailing_pe": stock_daily_data.float,
+        "trailing_pe": stock_daily_data.trailing_pe,
         "forward_pe": stock_daily_data.forward_pe,
         "trailing_peg_ratio": stock_daily_data.trailing_peg_ratio,
         "beta": stock_daily_data.beta,
@@ -281,5 +281,138 @@ async def insert_stock_daily(stock_daily_data: StockDailyInsert):
     dbm.insert_article(stock_daily_dict)
     dbm.close_connection()
 
+class CashFlowInsert(BaseModel):
+    ticker: str
+    date_time: str
+    free_cash_flow: int
+    operating_cash_flow: int
+    capex: int
+    net_income: int
+    stock_based_comp: int
+    depreciation_amortization: int
+    change_working_capital: int
+    dividends_paid: int
+    share_bybacks: int
+    share_issuance: int
+    debt_issuance: int
+    debt_rapayment: int
+    end_cash_position: int
+    changes_in_cash: int
 
-#cash flow, balance sheet, income statement inserts
+@app.post("/internal/insert_cash_flow")
+async def insert_cash_flow(cash_flow_data: CashFlowInsert):
+    cash_flow_dict = {
+        "ticker": cash_flow_data.ticker,
+        "date_time": cash_flow_data.date_time,
+        "free_cash_flow": cash_flow_data.free_cash_flow,
+        "operating_cash_flow": cash_flow_data.operating_cash_flow,
+        "capex": cash_flow_data.capex,
+        "net_income": cash_flow_data.net_income,
+        "stock_based_comp": cash_flow_data.stock_based_comp,
+        "depreciation_amortization": cash_flow_data.depreciation_amortization,
+        "change_working_capital": cash_flow_data.change_working_capital,
+        "dividends_paid": cash_flow_data.dividends_paid,
+        "share_bybacks": cash_flow_data.share_bybacks,
+        "share_issuance": cash_flow_data.share_issuance,
+        "debt_issuance": cash_flow_data.debt_issuance,
+        "debt_rapayment": cash_flow_data.debt_rapayment,
+        "end_cash_position": cash_flow_data.end_cash_position,
+        "changes_in_cash": cash_flow_data.changes_in_cash
+    }
+    dbm = utils.get_dbm()
+    dbm.insert_cash_flow(cash_flow_dict)
+    dbm.close_connection()
+
+class IncomeStatementInsert(BaseModel):
+    ticker: str
+    date_time: str
+    total_revenue: int
+    cost_of_revenue: int
+    gross_profit: int
+    operating_expense: int
+    research_and_development: int
+    selling_general_and_administration: int
+    operating_income: int
+    ebit: int
+    ebitda: int
+    interest_expense: int
+    interest_income: int
+    pretax_income: int
+    tax_provision: int
+    net_income: int
+    diluted_eps: float
+    diluted_average_shares: int
+
+@app.post("/internal/insert_income_statement")
+async def insert_income_statement(income_statement_data: IncomeStatementInsert):
+    income_statement_dict = {
+        "ticker": income_statement_data.ticker,
+        "date_time": income_statement_data.date_time,
+        "total_revenue": income_statement_data.total_revenue,
+        "cost_of_revenue": income_statement_data.cost_of_revenue,
+        "gross_profit": income_statement_data.gross_profit,
+        "operating_expense": income_statement_data.operating_expense,
+        "research_and_development": income_statement_data.research_and_development,
+        "selling_general_and_administration": income_statement_data.selling_general_and_administration,
+        "operating_income": income_statement_data.operating_income,
+        "ebit": income_statement_data.ebit,
+        "ebitda": income_statement_data.ebitda,
+        "interest_expense": income_statement_data.interest_expense,
+        "interest_income": income_statement_data.interest_income,
+        "pretax_income": income_statement_data.pretax_income,
+        "tax_provision": income_statement_data.tax_provision,
+        "net_income": income_statement_data.net_income,
+        "diluted_eps": income_statement_data.diluted_eps,
+        "diluted_average_shares": income_statement_data.diluted_average_shares
+    }
+    dbm = utils.get_dbm()
+    dbm.insert_income_statement(income_statement_dict)
+    dbm.close_connection()
+
+class BalanceSheetInsert(BaseModel):
+    ticker: str
+    date_time: str
+    total_assets: int
+    total_liabilities_net_minority_interest: int
+    stockholders_equity: int
+    current_assets: int
+    current_liabilities: int
+    cash_and_cash_equivalents: int
+    receivables: int
+    inventory: int
+    total_debt: int
+    net_debt: int
+    long_term_debt: int
+    current_debt: int
+    net_ppe: int
+    investments_and_advances: int
+    retained_earnings: int
+    common_stock_equity: int
+    shares_issued: int
+
+@app.post("/internal/insert_balance_sheet")
+async def insert_balance_sheet(balance_sheet_data: BalanceSheetInsert):
+    balance_sheet_dict = {
+        "ticker": balance_sheet_data.ticker,
+        "date_time": balance_sheet_data.date_time,
+        "total_assets": balance_sheet_data.total_assets,
+        "total_liabilities_net_minority_interest": balance_sheet_data.total_liabilities_net_minority_interest,
+        "stockholders_equity": balance_sheet_data.stockholders_equity,
+        "current_assets": balance_sheet_data.current_assets,
+        "current_liabilities": balance_sheet_data.current_liabilities,
+        "cash_and_cash_equivalents": balance_sheet_data.cash_and_cash_equivalents,
+        "receivables": balance_sheet_data.receivables,
+        "inventory": balance_sheet_data.inventory,
+        "total_debt": balance_sheet_data.total_debt,
+        "net_debt": balance_sheet_data.net_debt,
+        "long_term_debt": balance_sheet_data.long_term_debt,
+        "current_debt": balance_sheet_data.current_debt,
+        "net_ppe": balance_sheet_data.net_ppe,
+        "investments_and_advances": balance_sheet_data.investments_and_advances,
+        "retained_earnings": balance_sheet_data.retained_earnings,
+        "common_stock_equity": balance_sheet_data.common_stock_equity,
+        "shares_issued": balance_sheet_data.shares_issued
+    }
+    dbm = utils.get_dbm()
+    dbm.insert_balance_sheet(balance_sheet_dict)
+    dbm.close_connection()

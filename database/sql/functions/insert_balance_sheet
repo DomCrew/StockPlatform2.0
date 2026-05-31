@@ -1,0 +1,71 @@
+DROP FUNCTION IF EXISTS stockplatform.insert_balance_sheet;
+
+CREATE OR REPLACE FUNCTION stockplatform.insert_balance_sheet (
+    stock_id_p INTEGER,
+    date_time_p TIMESTAMP,
+    total_assets_p FLOAT,
+    total_liabilities_net_minority_interest_p FLOAT,
+    stockholders_equity_p FLOAT,
+    current_assets_p FLOAT,
+    current_liabilities_p FLOAT,
+    cash_and_cash_equivalents_p FLOAT,
+    receivables_p FLOAT,
+    inventory_p FLOAT,
+    total_debt_p FLOAT,
+    net_debt_p FLOAT,
+    long_term_debt_p FLOAT,
+    current_debt_p FLOAT,
+    net_ppe_p FLOAT,
+    investments_and_advances_p FLOAT,
+    retained_earnings_p FLOAT,
+    common_stock_equity_p FLOAT,
+    shares_issued_p BIGINT
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO stockplatform.balance_sheets (
+        stock_id,
+        date_time,
+        total_assets,
+        total_liabilities_net_minority_interest,
+        stockholders_equity,
+        current_assets,
+        current_liabilities,
+        cash_and_cash_equivalents,
+        receivables,
+        inventory,
+        total_debt,
+        net_debt,
+        long_term_debt,
+        current_debt,
+        net_ppe,
+        investments_and_advances,
+        retained_earnings,
+        common_stock_equity,
+        shares_issued
+    )
+    VALUES (
+        stock_id_p,
+        date_time_p,
+        total_assets_p,
+        total_liabilities_net_minority_interest_p,
+        stockholders_equity_p,
+        current_assets_p,
+        current_liabilities_p,
+        cash_and_cash_equivalents_p,
+        receivables_p,
+        inventory_p,
+        total_debt_p,
+        net_debt_p,
+        long_term_debt_p,
+        current_debt_p,
+        net_ppe_p,
+        investments_and_advances_p,
+        retained_earnings_p,
+        common_stock_equity_p,
+        shares_issued_p
+    );
+END;
+$$;

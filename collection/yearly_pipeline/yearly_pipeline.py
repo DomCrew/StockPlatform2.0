@@ -15,9 +15,9 @@ def yearly_pipeline(ticker: str) -> str:
         bs = get_balance_sheet(ticker)
         ist = get_income_statement(ticker)
         cf = get_cash_flow(ticker)
-        dbm.insert_balance_sheet(ticker, bs)
-        dbm.insert_income_statement(ticker, ist)
-        dbm.insert_cash_flow(ticker, cf)
+        dbm.insert_balance_sheets(ticker, bs)
+        dbm.insert_income_statements(ticker, ist)
+        dbm.insert_cash_flows(ticker, cf)
 
         return f"{ticker} pipeline finished"
     finally:
