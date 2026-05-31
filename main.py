@@ -320,7 +320,7 @@ async def insert_cash_flow(cash_flow_data: CashFlowInsert):
         "changes_in_cash": cash_flow_data.changes_in_cash
     }
     dbm = utils.get_dbm()
-    dbm.insert_cash_flow(cash_flow_dict)
+    dbm.insert_cash_flow(cash_flow_data.ticker, cash_flow_dict)
     dbm.close_connection()
 
 class IncomeStatementInsert(BaseModel):
@@ -366,7 +366,7 @@ async def insert_income_statement(income_statement_data: IncomeStatementInsert):
         "diluted_average_shares": income_statement_data.diluted_average_shares
     }
     dbm = utils.get_dbm()
-    dbm.insert_income_statement(income_statement_dict)
+    dbm.insert_income_statement(income_statement_data.ticker, income_statement_dict)
     dbm.close_connection()
 
 class BalanceSheetInsert(BaseModel):
@@ -414,5 +414,5 @@ async def insert_balance_sheet(balance_sheet_data: BalanceSheetInsert):
         "shares_issued": balance_sheet_data.shares_issued
     }
     dbm = utils.get_dbm()
-    dbm.insert_balance_sheet(balance_sheet_dict)
+    dbm.insert_balance_sheet(balance_sheet_data.ticker, balance_sheet_dict)
     dbm.close_connection()
