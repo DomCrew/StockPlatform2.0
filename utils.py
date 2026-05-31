@@ -50,3 +50,12 @@ def merge_lists_by_date_time(list1: list, list2: list) -> list:
             new_dict[key] = value
         merged.append(new_dict)
     return merged
+
+def none_to_missing_dict(d: dict) -> dict:
+    """
+    Converts any None values in a dictionary to a string 'Missing'
+    """
+    for key, value in d.items():
+        if value is None:
+            d[key] = 'Missing'
+    return d

@@ -47,14 +47,14 @@ class DatabaseManager:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
                 curs.execute("SELECT * FROM stockplatform.insert_stock(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                              (ticker,
-                              info["shortName"],
-                              info["longBusinessSummary"],
-                              info["sector"],
-                              info["industry"],
-                              info["fullTimeEmployees"],
-                              info["currency"],
-                              info["fullExchangeName"],
-                              info["country"]))
+                              info.get("shortName", None),
+                              info.get("longBusinessSummary", None),
+                              info.get("sector", None),
+                              info.get("industry", None),
+                              info.get("fullTimeEmployees", None),
+                              info.get("currency", None),
+                              info.get("fullExchangeName", None),
+                              info.get("country", None)))
 
         self.connection.commit()
 
@@ -65,16 +65,17 @@ class DatabaseManager:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
                 curs.execute("SELECT * FROM stockplatform.insert_stock_daily(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                              (stock_id,
-                              info['trailingPE'],
-                              info['forwardPE'],
-                              info['trailingPegRatio'],
-                              info['beta'],
-                              info['marketCap'],
-                              info['enterpriseValue'],
-                              info['priceToSalesTrailing12Months'],
-                              info['priceToBook'],
-                              info['enterpriseToRevenue'],
-                              database_utils.none_to_missing(info.get('enterpriseToEbitda'))))
+                              info.get('trailingPE', None),
+                              info.get('forwardPE', None),
+                              info.get('trailingPegRatio', None),
+                              info.get('beta', None),
+                              info.get('marketCap', None),
+                              info.get('enterpriseValue', None),
+                              info.get('priceToSalesTrailing12Months', None),
+                              info.get('priceToBook', None),
+                              info.get('enterpriseToRevenue', None),
+                              info.get('enterpriseToEbitda', None)))
+
         self.connection.commit()
 
     def get_stock_id_from_ticker(self, ticker: str) -> str:
@@ -107,12 +108,12 @@ class DatabaseManager:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
                 curs.execute("SELECT * FROM stockplatform.insert_article(%s, %s, %s, %s, %s, %s, %s)",
                              (stock_id,
-                              article_dict["title"],
-                              article_dict["summary"],
-                              article_dict["link"],
-                              article_dict["date_time"],
-                              article_dict["sa_label"],
-                              article_dict["sa_score"]))
+                              article_dict.get("title", None),
+                              article_dict.get("summary", None),
+                              article_dict.get("link", None),
+                              article_dict.get("date_time", None),
+                              article_dict.get("sa_label", None),
+                              article_dict.get("sa_score", None)))
         self.connection.commit()
 
     def insert_articles(self, ticker: str, articles: list) -> None:
@@ -193,7 +194,7 @@ class DatabaseManager:
     def get_stock_daily(self, ticker: str) -> list:
         stock_id = self.get_stock_id_from_ticker(ticker)
         sql_query = "SELECT * FROM stockplatform.stocks_daily WHERE stock_id = %s ORDER BY date_time DESC"
-        return database_utils.execute_sql_query(self.connection, sql_query, (stock_id,))
+        return database_utils.execute_sql_query(self.connection, sql_query, (stock_id,))[0]
 
     def get_cash_flows(self, ticker: str) -> list:
         stock_id = self.get_stock_id_from_ticker(ticker)

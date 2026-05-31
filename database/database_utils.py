@@ -37,11 +37,6 @@ def execute_sql_query(connection, query: str, params: tuple = None) -> list:
 
     return results
 
-def none_to_missing(obj) -> float:
-    if obj is None:
-        return -0.001
-    return obj
-
 def get_today() -> str:
     """ Return today's date string """
     return datetime.today().strftime("%Y-%m-%d")

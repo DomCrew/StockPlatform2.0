@@ -58,7 +58,7 @@ def read_item(ticker: str):
     dbm = utils.get_dbm()
     info = dbm.get_info(ticker)
     dbm.close_connection()
-    return info
+    return utils.none_to_missing_dict(info)
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/daily
 
@@ -68,7 +68,7 @@ def read_item(ticker: str):
     dbm = utils.get_dbm()
     daily = dbm.get_stock_daily(ticker)
     dbm.close_connection()
-    return daily
+    return utils.none_to_missing_dict(daily)
 
 # e.g. http://127.0.0.1:8000/stocks/amzn/articles?limit=5
 
