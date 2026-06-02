@@ -1,4 +1,7 @@
 pandas
+transformers
+torch
+huggingface_hub[hf_xet]
 python-dotenv
 sqlalchemy
 psycopg2-binary

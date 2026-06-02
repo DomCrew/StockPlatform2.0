@@ -1,16 +1,16 @@
 """Yearly pipeline script for data that rarely updates"""
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
-from database import DatabaseManager
+from database.database import DatabaseManager
 from finance import get_info, get_income_statement, get_cash_flow, get_balance_sheet
-import utils
+import collection_utils
 
 
 def yearly_pipeline(ticker: str) -> str:
     dbm = DatabaseManager()
     try:
         info = get_info(ticker)
-        dbm.insert_info(ticker, info)
+        dbm.insert_stock(ticker, info)
 
         bs = get_balance_sheet(ticker)
         ist = get_income_statement(ticker)
@@ -27,7 +27,7 @@ def yearly_pipeline(ticker: str) -> str:
 if __name__ == "__main__":
     load_dotenv()
     dbm = DatabaseManager()
-    tickers = utils.make_get_request("stocks/")
+    tickers = collection_utils.make_get_request("stocks/")
     dbm.close_connection()
 
     print("Starting yearly pipeline")

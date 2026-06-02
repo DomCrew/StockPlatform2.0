@@ -4,7 +4,7 @@ from transformers import pipeline
 
 def get_news_and_sentiment(ticker: str, count: int, news: list):
     """ Returns latest news and their sentiment for a given ticker """
-    titles = [f"{article["title"]}. {article["summary"]}" for article in news]
+    titles = [f"""{article["title"]}. {article["summary"]}""" for article in news]
     sentiment_analyzer = pipeline(
         "text-classification",
         model="yiyanghkust/finbert-tone",

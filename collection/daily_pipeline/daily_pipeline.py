@@ -1,9 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
-from database import DatabaseManager
+from database.database import DatabaseManager
 from sentiment_analysis import get_news_and_sentiment
 from finance import get_info
-import utils
+import collection_utils
 
 
 def daily_pipeline(ticker: str) -> str:
@@ -21,7 +21,7 @@ def daily_pipeline(ticker: str) -> str:
 if __name__ == "__main__":
     load_dotenv()
     dbm = DatabaseManager()
-    tickers = utils.make_get_request("stocks/")
+    tickers = collection_utils.make_get_request("stocks/")
     dbm.close_connection()
 
     print("Starting daily pipeline")

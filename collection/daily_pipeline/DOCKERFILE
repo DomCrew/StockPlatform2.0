@@ -2,10 +2,13 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY ../requirements.txt ../utils.py .
-
+COPY collection/daily_pipeline/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ../../database/database.py ../../database/database_utils.py ../finance.py ../sentiment_analysis.py daily_pipeline.py ./
+COPY database ./database
+COPY collection/collection_utils.py ./
+COPY collection/finance.py ./
+# COPY collection/daily_pipeline/sentiment_analysis.py ./
+COPY collection/daily_pipeline/daily_pipeline.py ./
 
 CMD ["python", "daily_pipeline.py"]
