@@ -101,7 +101,10 @@ class DatabaseManager:
             with conn.cursor(cursor_factory=RealDictCursor) as curs:
                 curs.execute(
                     "SELECT stock_id FROM stockplatform.stocks WHERE ticker = %s", (ticker,))
-                stock_id = curs.fetchall()[0]['stock_id']
+                row = curs.fetchone()
+                if row is None:
+                    raise ValueError(f"Ticker not found in stocks table: {ticker}")
+                stock_id = row['stock_id']
 
         return stock_id
 

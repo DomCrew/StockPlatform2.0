@@ -8,7 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY database ./database
 COPY collection/collection_utils.py ./
 COPY collection/finance.py ./
-# COPY collection/daily_pipeline/sentiment_analysis.py ./
+COPY collection/daily_pipeline/sentiment_analysis.py ./
 COPY collection/daily_pipeline/daily_pipeline.py ./
+COPY collection/daily_pipeline/entrypoint.sh ./
 
-CMD ["python", "daily_pipeline.py"]
+CMD ["bash", "entrypoint.sh"]

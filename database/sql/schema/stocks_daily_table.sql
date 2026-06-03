@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS stockplatform.stocks_daily(
-    stock_id SERIAL PRIMARY KEY,
+    stock_daily_id SERIAL PRIMARY KEY,
+    stock_id INTEGER NOT NULL,
     date_time TIMESTAMP NOT NULL,
     trailing_pe FLOAT,
     forward_pe FLOAT,

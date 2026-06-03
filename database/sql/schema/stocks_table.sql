@@ -11,3 +11,8 @@ CREATE TABLE IF NOT EXISTS stockplatform.stocks(
     country VARCHAR(20),
     last_updated TIMESTAMP
 );
+
+INSERT INTO stockplatform.stocks (ticker) VALUES ('amzn'),
+('aapl'),
+('jpm'),
+('dis');

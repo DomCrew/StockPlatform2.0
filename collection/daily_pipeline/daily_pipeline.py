@@ -2,17 +2,22 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 from database.database import DatabaseManager
 from sentiment_analysis import get_news_and_sentiment
-from finance import get_info
+from finance import get_info, get_news
 import collection_utils
 
 
 def daily_pipeline(ticker: str) -> str:
     dbm = DatabaseManager()
     try:
-        articles = get_news_and_sentiment(ticker, 7)
+        news = get_news(ticker, 5)
+        #news = get_news_and_sentiment(news)
+        #remove late
+        for article in news:
+            article["sa_label"] = "Positive"
+            article["sa_score"] = 0.5
         info = get_info(ticker)
-        dbm.insert_articles(ticker, articles)
-        dbm.insert_stock_daily(ticker, info)
+        dbm.insert_stock_daily(info)
+        dbm.insert_articles(ticker, news)
         return f"{ticker} pipeline finished"
     finally:
         dbm.close_connection()
@@ -20,14 +25,14 @@ def daily_pipeline(ticker: str) -> str:
 
 if __name__ == "__main__":
     load_dotenv()
-    dbm = DatabaseManager()
-    tickers = collection_utils.make_get_request("stocks/")
-    dbm.close_connection()
+    #tickers = collection_utils.make_get_request("stocks/")
+    tickers = ["amzn", "aapl", "dis", "jpm"]
 
     print("Starting daily pipeline")
 
-    with ThreadPoolExecutor(max_workers=4) as e:
-        futures = [e.submit(daily_pipeline, t) for t in tickers]
+    for ticker in tickers:
+        daily_pipeline(ticker)
 
-        for future in as_completed(futures):
-            print(future.result())
+    # with ThreadPoolExecutor(max_workers=len(tickers)) as executor:
+    #     for result in executor.map(daily_pipeline, tickers):
+    #         print(result)

@@ -9,5 +9,6 @@ COPY database ./database
 COPY collection/collection_utils.py ./
 COPY collection/finance.py ./
 COPY collection/yearly_pipeline/yearly_pipeline.py ./
+COPY collection/yearly_pipeline/entrypoint.sh ./
 
-CMD ["python", "yearly_pipeline.py"]
+CMD ["bash", "entrypoint.sh"]

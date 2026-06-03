@@ -39,50 +39,50 @@ services:
       - ./frontend:/app
       - /app/node_modules
 
-  # daily-pipeline:
-  #   build:
-  #     context: .
-  #     dockerfile: ./collection/daily_pipeline/Dockerfile
-  #   container_name: daily_pipeline
-  #   restart: always
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     DB_USER: postgres
-  #     DB_NAME: postgres
-  #     DB_PORT: 5432
-  #     DB_PASSWORD: postgres
-  #     DB_HOST: db
+  daily-pipeline:
+    build:
+      context: .
+      dockerfile: ./collection/daily_pipeline/Dockerfile
+    container_name: daily_pipeline
+    restart: "no"
+    depends_on:
+      - backend
+    environment:
+      DB_USER: postgres
+      DB_NAME: postgres
+      DB_PORT: 5432
+      DB_PASSWORD: postgres
+      DB_HOST: db
 
-  # hourly-pipeline:
-  #   build:
-  #     context: .
-  #     dockerfile: ./collection/hourly_pipeline/Dockerfile
-  #   container_name: hourly_pipeline
-  #   restart: always
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     DB_USER: postgres
-  #     DB_NAME: postgres
-  #     DB_PORT: 5432
-  #     DB_PASSWORD: postgres
-  #     DB_HOST: db
+  hourly-pipeline:
+    build:
+      context: .
+      dockerfile: ./collection/hourly_pipeline/Dockerfile
+    container_name: hourly_pipeline
+    restart: "no"
+    depends_on:
+      - daily-pipeline
+    environment:
+      DB_USER: postgres
+      DB_NAME: postgres
+      DB_PORT: 5432
+      DB_PASSWORD: postgres
+      DB_HOST: db
 
-  # yearly-pipeline:
-  #   build:
-  #     context: .
-  #     dockerfile: ./collection/yearly_pipeline/Dockerfile
-  #   container_name: yearly_pipeline
-  #   restart: always
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     DB_USER: postgres
-  #     DB_NAME: postgres
-  #     DB_PORT: 5432
-  #     DB_PASSWORD: postgres
-  #     DB_HOST: db
+  yearly-pipeline:
+    build:
+      context: .
+      dockerfile: ./collection/yearly_pipeline/Dockerfile
+    container_name: yearly_pipeline
+    restart: "no"
+    depends_on:
+      - daily-pipeline
+    environment:
+      DB_USER: postgres
+      DB_NAME: postgres
+      DB_PORT: 5432
+      DB_PASSWORD: postgres
+      DB_HOST: db
 
 volumes:
   postgres_data:

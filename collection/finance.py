@@ -13,7 +13,9 @@ def get_history(ticker: str) -> pd.DataFrame:
 
 def get_info(ticker: str) -> dict:
     """ Returns company info for a given ticker """
-    return yf.Ticker(ticker).info
+    info = yf.Ticker(ticker).info
+    info["ticker"] = ticker
+    return info
 
 
 def get_latest_price(ticker: str) -> float:

@@ -27,13 +27,17 @@ def yearly_pipeline(ticker: str) -> str:
 if __name__ == "__main__":
     load_dotenv()
     dbm = DatabaseManager()
-    tickers = collection_utils.make_get_request("stocks/")
+    #tickers = collection_utils.make_get_request("stocks/")
+    tickers = ["amzn", "aapl", "dis", "jpm"]
     dbm.close_connection()
 
     print("Starting yearly pipeline")
 
-    with ThreadPoolExecutor(max_workers=4) as e:
-        futures = [e.submit(yearly_pipeline, t) for t in tickers]
+    for ticker in tickers:
+        yearly_pipeline(ticker)
 
-        for future in as_completed(futures):
-            print(future.result())
+    # with ThreadPoolExecutor(max_workers=4) as e:
+    #     futures = [e.submit(yearly_pipeline, t) for t in tickers]
+
+    #     for future in as_completed(futures):
+    #         print(future.result())
