@@ -6,3 +6,5 @@ sqlalchemy
 uvicorn[standard]
 yfinance
 pydantic
+openai
+dotenv

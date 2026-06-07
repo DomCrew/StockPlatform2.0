@@ -14,7 +14,7 @@ COPY database/database.py database/database_utils.py /app/database/
 RUN mkdir /app/database/sql
 COPY database/sql /app/database/sql
 
-COPY main.py test.py utils.py /app/
+COPY main.py test.py utils.py ai_insights.py instructions.md schema.md /app/
 
 COPY entrypoint.sh /entrypoint.sh
 

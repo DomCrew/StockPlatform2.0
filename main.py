@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from collection.finance import get_atrs, get_obvs, get_smas, get_latest_price, get_ccis, get_macds
 from database.database import DatabaseManager
+from ai_insights import AiInsights
 import utils
 
 app = FastAPI()
@@ -190,3 +191,10 @@ def read_item(ticker: str, period: Union[str, None] = "weekly"):
     prices = dbm.get_prices(ticker, period)
     dbm.close_connection()
     return get_atrs(prices)
+
+# http://127.0.0.1:8000/aiinsights/amzn
+
+@app.get("/aiinsights/{ticker}")
+def read_item(ticker: str):
+    aii = AiInsights(ticker)
+    return aii.get_insights()
